@@ -1,7 +1,12 @@
 module.exports = class Channel {
-  constructor(name, user1 = null, user2 = null) {
+  constructor(name, isPrivate = false, user1 = null, user2 = null) {
     this.name = name
     this.messages = []
+    this.isPrivate = isPrivate
+    if (this.isPrivate) {
+      this.user1 = user1
+      this.user2 = user2
+    }
   }
 
   addMessage(message) {
@@ -9,5 +14,9 @@ module.exports = class Channel {
       this.messages.shift()
     }
     this.messages.push(message)
+  }
+
+  canAccess(user) {
+    return (user === this.user1 || user === this.user2) && this.isPrivate
   }
 }

@@ -70,6 +70,7 @@ export default class ClientChat {
     })
 
     document.addEventListener('local:user:connect', (event) => {
+      window.localStorage.setItem('nickname', event.detail.nickname)
       this.socket.emit('client:connection:try', event.detail.nickname)
     })
 
@@ -84,6 +85,10 @@ export default class ClientChat {
 
     document.addEventListener('local:user:end_typing', () => {
       this.socket.emit('client:user:end_typing')
+    })
+
+    document.addEventListener('local:user:want_private', (event) => {
+      this.socket.emit('client:channel:private', event.detail.nickname)
     })
   }
 }

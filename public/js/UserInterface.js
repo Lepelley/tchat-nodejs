@@ -71,7 +71,6 @@ export default class UserInterface {
       clone.querySelector('span.time').innerHTML = `(${time}) : `
       clone.querySelector('span.message').innerHTML = filterXSS(message)
       document.getElementById('messages').appendChild(clone)
-      emojify.run()
     }
   }
 
@@ -106,10 +105,21 @@ export default class UserInterface {
         const clone = document.importNode(template.content, true)
         const liElt = clone.querySelector('li')
         liElt.innerHTML = filterXSS(user.nickname)
+        liElt.setAttribute('data-id', user.nickname)
         liElt.setAttribute(
           'data-value',
           `${filterXSS(user.nickname)}${user.isTyping ? ' écrit' : ''}`
         )
+        if (window.localStorage.getItem('nickname') !== liElt.dataset.id) {
+          liElt.classList.add('user-link')
+          liElt.addEventListener('click', () => {
+            document.querySelector('h1').textContent = 'Messagerie privé avec ' + liElt.dataset.id
+            document.dispatchEvent(new CustomEvent(
+              'local:user:want_private',
+              {detail: {nickname: liElt.dataset.id}})
+            )
+          })
+        }
         document.querySelector('#listingUsers').appendChild(clone)
       })
     }

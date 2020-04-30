@@ -1,4 +1,5 @@
 const Server = require('socket.io')
+const { v4: uuidv4 } = require('uuid')
 
 const User = require('./User')
 const Channel = require('./Channel')
@@ -57,6 +58,10 @@ module.exports = class ServerChat {
         socket.to(socket.user.currentChannel.name).emit('server:user:end_typing', socket.user.nickname)
       }
     })
+
+    socket.on('client:channel:private', (nickname) => {
+      this.joinChannel(socket, this.findPrivateChannelName(socket.user.nickname, nickname))
+    })
   }
 
   sendChannelMessages(socket, channelName) {
@@ -75,9 +80,18 @@ module.exports = class ServerChat {
     this.users.push(socket.user)
     socket.emit('server:connection:allowed')
     this.joinChannel(socket)
+
+    this.users.forEach(user => {
+      if (socket.user && user !== socket.user) {
+        this.channels.push(new Channel(uuidv4(), true, user.nickname, socket.user.nickname))
+      }
+    })
   }
 
   joinChannel(socket, channelName = this.defaultChannel.name) {
+    if (channelName === false) {
+      return
+    }
     if (this.channels.findIndex(channel => channel.name === channelName) !== -1) {
       socket.leave(socket.user.currentChannel.name)
       socket.user.currentChannel = this.channels.find(channel => channel.name === channelName)
@@ -126,6 +140,21 @@ module.exports = class ServerChat {
   }
 
   showChannels() {
-    this.io.emit('server:list:channels', this.channels.map(channel => channel.name))
+    this.io.emit(
+      'server:list:channels',
+      this.channels.filter(channel => channel.isPrivate === false).map(channel => channel.name)
+    )
+  }
+
+  findPrivateChannelName(user1, user2) {
+    if (user1 === user2) {
+      return
+    }
+    const channel = this.channels.find(channel => {
+      return (channel.user1 === user1 && channel.user2 === user2) ||
+        (channel.user1 === user2 && channel.user2 === user1)
+    })
+
+    return channel ? channel.name : false
   }
 }
