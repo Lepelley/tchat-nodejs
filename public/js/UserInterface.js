@@ -71,6 +71,7 @@ export default class UserInterface {
       clone.querySelector('span.time').innerHTML = `(${time}) : `
       clone.querySelector('span.message').innerHTML = filterXSS(message)
       document.getElementById('messages').appendChild(clone)
+      emojify.run()
     }
   }
 
@@ -144,10 +145,10 @@ export default class UserInterface {
   }
 
   startTyping(nickname) {
-    document.querySelector(`[data-value=${nickname}]`).textContent = `${nickname} écrit`
+    document.querySelector(`[data-value="${nickname}"]`).textContent = `${nickname} écrit`
   }
 
   endTyping(nickname) {
-    document.querySelector(`[data-value=${nickname}]`).textContent = nickname
+    document.querySelector(`[data-value="${nickname}"]`).textContent = nickname
   }
 }
