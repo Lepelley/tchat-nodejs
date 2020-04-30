@@ -1,0 +1,32 @@
+body, #tchat {
+    background: #9b9b9b;
+}
+
+input {
+    background: #d0d0d0 !important;
+}
+
+#tchat #sidebar h2 {
+    text-align: center;
+}
+
+#tchat #sidebar {
+    background: #414141;
+    border-right: 1px solid black;
+    color: white;
+}
+
+#messages {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+h1, h2 {
+    border-bottom: 1px solid;
+}
+
+.channel-link:hover, .user-link:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
