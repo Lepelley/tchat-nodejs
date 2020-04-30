@@ -26,7 +26,6 @@ export default class ClientChat {
     })
 
     this.socket.on('server:user:change_channel', (info) => {
-      console.log('changement')
       this.ui.createMessage(
         `${info.nickname} vient de rejoindre le salon`,
         '[Serveur]',
