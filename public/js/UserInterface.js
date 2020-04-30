@@ -1,4 +1,7 @@
 export default class UserInterface {
+  constructor() {
+    emojify.run()
+  }
   listenInterface() {
     document.getElementById('chat').addEventListener('submit', (event) => {
       event.preventDefault()
